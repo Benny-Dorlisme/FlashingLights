@@ -1,0 +1,116 @@
+@media screen and (max-height : 995px) and (max-width : 1920px){
+	
+html{
+	margin:0px;
+	padding:0px;
+	border:0px;
+	
+}
+body{
+	margin:0px;
+	padding:0px;
+	border:0px;
+}
+#game_container{
+	margin: 0 auto;
+	width:960px;
+	height:995px;
+	border-left: solid 1px;
+	border-right: solid 1px;
+}
+#game{
+	
+	margin:auto;
+	
+}
+#count_down{
+	
+	/*display:none;
+	 
+	 */
+	visibility:hidden;
+	height:100px;
+	width:100px;
+	font-family:Impact;
+	font-size:100px;
+	margin:0 auto;
+	color:white;
+	text-shadow: 5px 5px 5px black;
+	position:relative;
+	
+}
+#start_game{
+	position:absolute;
+	
+}
+#hud{
+	height:20%;
+}
+.circle{
+	
+	border-radius:100px;
+	border:solid 1px black;
+	height:100px;
+	width:100px;
+	display:inline-block;
+	margin: 10px;
+}
+
+.timer{
+	
+	
+		width:10%;
+	position: relative;
+	float:right;
+	top:80%;
+	height:20%;
+	
+	border:solid 2px;
+}
+
+.energy{
+	height:5%;
+	border:solid 2px;
+	width:35%;
+	margin: auto 33%;
+	background-color:grey;
+}
+
+
+#energy_layer_1{
+	
+	height:100%;
+	background-color:red;
+	background:linear-gradient(45deg ,red,white );
+	
+}
+
+#energy_layer_2{
+	
+	height:100%;
+	background-color:yellow;
+	background:linear-gradient(45deg ,yellow,white );
+}
+#energy_layer_3{
+	
+	height:100%;
+	background-color:green;
+
+	background:linear-gradient(45deg ,green,white );
+	
+}
+
+
+[data-circle='good']{
+
+    background-color:green;
+}  
+[data-circle='bad'] {
+ background-color:red;
+}
+[data-circle='null']{
+ 
+
+    background-color:white;
+}
+}
