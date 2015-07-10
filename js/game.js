@@ -71,12 +71,14 @@
             						$("#energy_layer_3").animate({width:"+="+number+"%"},function(){});
             						console.log("energy:" + this.value);
             					}else if(this.value >100 && this.value < 200){
+            						$("#energy_layer_3").css("width" , 0);
             						$("#energy_layer_2").animate({width:"+="+number+"%"},function(){});
             						console.log("energy:" + this.value);
             					}else if(this.value >0 && this.value < 100){
             						$("#energy_layer_1").animate({width:"+="+number+"%"},function(){});
             						console.log("energy:" + this.value);
             					}else if(this.value ==0){
+            						
             						return;
             					}
             				}
@@ -230,6 +232,7 @@
 			                                                
 			                                                Game.Interface.Hud.attempts_left--;
 			                                                document.getElementById("current_number_of_trys_left").innerHTML = this.Hud.attempts_left;
+			                                                this.energybar.setEnergyBar(-10);
 			                                                Game.Driver.turnCircleOff(circle_number);
 			                                                if(Game.Interface.Hud.attempts_left == 0)
 			                                                	Game.Driver.endGame();
@@ -267,6 +270,7 @@
                 Game.Data.initData();
                 Game.Player.initPlayer();
                 Game.Interface.initInterface();
+                CookieFile.initCookies();
                 this.lightCircles();
                 
             
@@ -278,11 +282,17 @@
 	 	                             	
 	 	                             	case 0: {
 	 	                             				m = Math.round(Math.random()*6);
-	 	                             				while(Math.random()<0.5){
+	 	                             				if(m > 3){
+		 	                             				while(Math.random()<0.2){
+		 	                             					m = Math.round(Math.random()*3);
+		 	                             				}
+		 	                             				while(m == 0){
 	 	                             					m = Math.round(Math.random()*3);
 	 	                             				}
-	 	                             				while(m == 0){
-	 	                             					m = Math.round(Math.random()*6);
+	 	                             				}else{
+		 	                             				while(m == 0){
+		 	                             					m = Math.round(Math.random()*6);
+		 	                             				}
 	 	                             				}
 	 	                             				break;
 	 	                             		}

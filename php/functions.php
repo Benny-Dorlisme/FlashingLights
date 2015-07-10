@@ -1,52 +1,6 @@
 <?php
-function getNumberOfActivePlayers(){
-
-    try{
-          $mysql = new mysqli("127.0.0.1" ,"root", "", "flashing_lights");
- 	       		$number_of_players = count($mysql->query("select * from sessions  where  status = 1")->fetch_all());
-				
-		         $mysql->close();
-           $mysql = null;
-           return $number_of_players;
-        
-    }catch(Exception $ex){
-    }
-}
 
 
-function getSystem(){
-
-
-    try{
-         $ip = $_SERVER['REMOTE_ADDR'];
-         $os = $_SERVER['HTTP_USER_AGENT'];
-         echo(toArray($os)->indexOf(2));
-    }
-    catch(Exception $ex){
-    
-    }
-}
-function getOS(){
-
-    $os = null;
-    try{
-        if(strpos($_SERVER["HTTP_USER_AGENT"] , "Android") != false){
-       
-           $os = $_SERVER["HTTP_USER_AGENT"];
-           $os =  substr($os,strpos($os , "Android") );
-           $os =  substr($os , strpos($os , "Android") , strpos($os , ";"));
-           return $os;
-         
-        }else if(strpos($_SERVER["HTTP_USER_AGENT"] , "Windows") != false){
-        
-           $os = $_SERVER["HTTP_USER_AGENT"];
-           $os =  substr($os,strpos($os , "Windows") );
-           $os =  substr($os , strpos($os , "Windows") , strpos($os , ";"));
-           return $os;          
-        }
-    }catch(Exception $ex){
-    }    
-}
 function getIPAddress(){
 
     return $_SERVER["REMOTE_ADDR"];
@@ -73,4 +27,68 @@ function getMacAddress(){
     }catch(Exception $ex){
     }
 }
+function getNumberOfActivePlayers(){
+
+    try{
+          $mysql = new mysqli("127.0.0.1" ,"root", "", "flashing_lights");
+ 	       		$number_of_players = count($mysql->query("select * from sessions  where  status = 1")->fetch_all());
+				
+		         $mysql->close();
+           $mysql = null;
+           return $number_of_players;
+        
+    }catch(Exception $ex){
+    }
+}
+function getOS(){
+
+    $os = null;
+    try{
+        if(strpos($_SERVER["HTTP_USER_AGENT"] , "Android") != false){
+       
+           $os = $_SERVER["HTTP_USER_AGENT"];
+           $os =  substr($os,strpos($os , "Android") );
+           $os =  substr($os , strpos($os , "Android") , strpos($os , ";"));
+           return $os;
+         
+        }else if(strpos($_SERVER["HTTP_USER_AGENT"] , "Windows") != false){
+        
+           $os = $_SERVER["HTTP_USER_AGENT"];
+           $os =  substr($os,strpos($os , "Windows") );
+           $os =  substr($os , strpos($os , "Windows") , strpos($os , ";"));
+           return $os;          
+        }
+    }catch(Exception $ex){
+    }    
+}
+function getSessionId(){
+
+    
+}
+function getSystem(){
+
+
+    try{
+         $ip = $_SERVER['REMOTE_ADDR'];
+         $os = $_SERVER['HTTP_USER_AGENT'];
+         echo(toArray($os)->indexOf(2));
+    }
+    catch(Exception $ex){
+    
+    }
+}
+function isCookieSet($cookie){
+	
+	if(isset($_COOKIE[$cookie]))
+		return true;
+	else 
+		return false;
+};
+function setSiteCookies(){
+	
+	setcookie("vists","0",date(DATE_COOKIE,60*60*24*30*12));
+	
+}
+
+
 ?>

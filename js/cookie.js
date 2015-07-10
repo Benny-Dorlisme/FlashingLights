@@ -1,9 +1,9 @@
 //Author: Benny Dolisme
     
         CookieFile = {
-        
-            cookies : {},
             
+            cookies : null,
+        
             changeCookieValue : function( key , value, expires){
             	
             	document.cookie = (key +"="+value +";" + " expires="+expires);
@@ -44,58 +44,25 @@
                 */
             },
             
-            createCookie : function(object){
-        
-              
-                 var cookie_name = Object.keys(object)[0];
-                 var cookie = "";
-                 var search_undefined = new RegExp("undefined" , "g");
-                 var search_null = new RegExp("null","g");
-                 var array = null;
-                 Object.defineProperty(this.cookies , cookie_name , {value:object ,configurable:true});
-        
-            cookie += (Object.keys(this.cookies[cookie_name])[0] + "=" 
-            + this.cookies[cookie_name][cookie_name] + ";" 
-            + Object.keys(this.cookies[cookie_name])[1] 
-            + "=" + this.cookies[cookie_name]["expires"] + ";"
-            + Object.keys(this.cookies[cookie_name])[2] + "=" 
-            +  this.cookies[cookie_name]["path"] + ";" 
-            + Object.keys(this.cookies[cookie_name])[3] + "="
-            + this.cookies[cookie_name]["domain"] + ";"
-            + Object.keys(this.cookies[cookie_name])[4] );
-        
-         if(search_undefined.test(cookie)){
-           
-          array = cookie.split(";");
-        
-            cookie = "";
-            for(var i = 0; i < array.length; i++){
-                  
-                 if(search_undefined.test(array[i]))
-                    array.splice(i, i);
-                    if(i != array.length - 1){
-                        array[i] = array[i] + ";";
-                        cookie += array[i];
-                    }
-            }
-            
-        }else if(search_null.test("null")){
-            
-          array = cookie.split(";");
-        cookie = "";
-            for(var i = 0; i < array.length; i++){
-                    
-                 if(search_null.test(array[i]))
-                    array[i].splice(i ,i);
-                    if(i != array.length - 1){
-                        array[i] = array[i]+ ";";
-                        cookie += array[i];
-                    }
-              }
-        }
-        
-        return cookie; 
-    } ,
+            createCookie : function(name , value , expire , path , domain ,secure){
+               var cookie = undefined;
+        		try{
+	        		cookie = name +"=" +value+";";
+	        		if(expire != undefined || expire != null)
+	        			cookie += (expire+";");
+	        		if(path != undefined || path != null)
+	        			cookie += (path+";");
+	        		if(domain != undefined || domain != null)
+	        			cookie += (domain+";");
+	        		if(secire != undefined || secure != null)
+        			cookie += ("secure="+ secure + ";");
+        			
+        		}catch(ex){
+        			
+        		}finally{
+        			document.cookie = cookie;
+        		}
+    },
     destroyCookie : function(cookie){
             
         var d = new Date();
@@ -120,31 +87,174 @@
         document.cookie = cookie;
       
     },
+    /* function to determine does cookie exist in cookie file
+     * @param name
+     * name of cookie in file
+     */
     
     doesCookieExist : function(name){
-            
-        var exist = false;
-      
-                 
-             if (this.cookies[name])
-                exist = true;
+          
+          var cookies = undefined;
+          var exist   = undefined;
+           
+	      try{
+	     
+	      	cookies = document.cookie;
+	      	exist   = false;
+	     
+	             if (cookies.indexOf(name) != 1)
+	                exist = true;
+	             else
+	             	exist = exist;
+	      }catch(ex){
+	      	
+	      }finally{
+	      	
+	      }
            
       return exist;
     },
     
-    validateCookie : function(cookie){
-         
-        if(Object.getOwnPropertyNames(cookie).length == 0)
-            throw new Exception("");    
-        else if(Object.getOwnPropertyNames(cookie).length > 5)
-            throw new Exception("");
+     /* This function returns a value of a key in the cookie file
+      * @param key
+      * The key of the cookie you want to get the value of
+      * 
+      * @return 
+      * The value of the key
+      */
+    getCookieValue : function(key){
+    	
+    	var value = undefined;
+    	var cookies = document.cookie;
+ 
+    	try{
+    		if(this.doesCookieExist(key)){
         
-      for(var i = 0; i < Object.keys(cookie).length; i++ ){
+        if(cookies.indexOf(";" , key ) == -1)
+              value = cookies.substring(cookies.indexOf("=")+1 , cookies.length);
+    			else
+          value = cookies.substring(cookies.indexOf("=") , cookies.indexOf(";" , cookies.indexOf(key)));
+   
+    			return value;
+    		}else{
+    			throw new Error();
+    		}
+    	}catch(ex){
+    		
+    	}finally{
+    		
+    	}
+    },
+    
+    initCookies : function(){
         
-           
-      }
+        var cookies = undefined;
+        var key     = undefined;
+        var value   = undefined;
+        var expires = undefined;
+        var path    = undefined;
+        var domain  = undefined;
+        var secure  = undefined;
+        var number_of_cookies;
+        this.cookies = {};
+        try{
+            if(cookies.indexOf(";") > -1){
             
-              
-         
+                   cookies = document.cookies.split(";");
+                   for(var i in cookies){
+                        
+                        var key = i.substring(0,i.indexOf("=")-1);
+                        var value = i.substring(i.indexOf("="), i.length);
+                        if(CookieFile.isCookieExpireDateSet(key)){
+                            if(i.indexOf(";" , i.indexOf("expire")) > -1)
+                                 expires = i.substring(i.indexOf("expires" , key) , i.indexOf(";" , "expires"));
+                            else
+                                 expires = i.substring(i.indexOf("expires"));
+                        }
+                        if(CookieFile.isCookiePathSet(key)){
+                            if(i.indexOf(";" , i.indexOf("path")) > -1)
+                                 path = i.substring(i.indexOf("path" , key) , i.indexOf(";" , "path"));
+                            else
+                                 expires = i.substring(i.indexOf("path"));
+                        }
+                         Object.defineProperty(CookieFile.cookies ,key,{value:value , configurable:true} );
+                        
+                    }
+            }
+            else{
+                   cookies = document.cookie;  
+            }
+            this.cookies = {};
+            
+        }catch(ex){
+        }finally{
+        }
+    },
+    /*
+    * Checks to see if expire is set in the cookie
+    * @param key
+    * the cookie to check
+    * @return
+    * returns true if expire is found in cookie    
+    */
+    isCookieExpireDateSet : function(key){
+    
+        var cookies = undefined;
+        try{
+            cookies = document.cookie;
+            if(doesCookieExist(key)){
+                if(cookies.indexOf("expires" , key) > -1)
+                    return true;
+                else
+                    return false;         
+            }
+        }catch(ex){
+        }finally{
+        }
+    },
+    isCookiePathSet : function(key){
+    
+        var cookies = undefined;
+        try{
+            cookies = document.cookie;
+            if(doesCookieExist(key)){
+                if(cookies.indexOf("path" , key) > -1)
+                    return true;
+                else
+                    return false;         
+            }
+        }catch(ex){
+        }finally{
+        }
+    },
+    isCookieDomainSet : function(key){
+    
+        var cookies = undefined;
+        try{
+            cookies = document.cookie;
+            if(doesCookieExist(key)){
+                if(cookies.indexOf("domain" , key) > -1)
+                    return true;
+                else
+                    return false;         
+            }
+        }catch(ex){
+        }finally{
+        }
+    },
+    isCookieSecureStatusSet : function(key){
+    
+        var cookies = undefined;
+        try{
+            cookies = document.cookie;
+            if(doesCookieExist(key)){
+                if(cookies.indexOf("secure" , key) > -1)
+                    return true;
+                else
+                    return false;         
+            }
+        }catch(ex){
+        }finally{
+        }
     }
 };

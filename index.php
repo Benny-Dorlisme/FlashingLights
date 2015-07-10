@@ -1,26 +1,34 @@
 <?php
+
 include("php/CustomSessionHandler.php");
 include("php/functions.php");
 	 
+if(isset($_COOKIE['PHPSESSID'])){
+    
+    $mysql = new mysqli("127.0.0.1" , "root" , ""  , "flashing_lights");
+    if($mysql->query("select * 	from users where id = '" . $_COOKIE['PHPSESSID'] . "' limit 1")->fetch_row() == 0)    
+        $player_name = "	User" . getNumberOfActivePlayers();
+     else{
+        $player_name = $mysql->query("select * 	from users where id = '" . $_COOKIE['PHPSESSID'] . "' limit 1")->fetch_assoc();
+        $player_name = $player_name['name'];
+     }
+}else{
+ $player_name = "User" . (getNumberOfActivePlayers() + 1);
+}
 
-	session_set_save_handler(new CustomSessionHandler());
-	
+session_set_save_handler(new CustomSessionHandler());
+
 	if(session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-
+	
 //getMacAddress();
 //echo session_id();
 	//$mysql_connection = new mysqli('127.0.0.1','root','','flashing_lights');
  //print_r($mysql_connection->query('select * from sessions where id = '' . session_id() . ''')->fetch_row());
 	
 //	print_r($_SERVER);
-if(!isset($_COOKIE['player_name'])){
-	$player_name = "User" . getNumberOfActivePlayers();
-	$_COOKIE['player_name'] = $player_name;
-}
-else 
-	$player_name = $_COOKIE['player_name'];
+
 echo("
 <!DOCTYPE html>
 <html>
@@ -29,8 +37,9 @@ echo("
 			Web app 
 		</title>
 		<script type='text/javascript' src='js/jquery-1.10.1.js'></script>
-  		 		<script src='/js/ajax.js'></script>
+				 <script src='/js/date.js'></script>
 		 <script src='/js/cookie.js'></script>
+  		 		<script src='/js/ajax.js'></script>
 		<script src='/js/game.js'></script> 
 <script src='/js/events.js'></script>
 		<link type='text/css' rel='stylesheet' href='/css/css.css'>
@@ -49,7 +58,11 @@ echo("
 			</section>
 			
 	
-				<div  class='energy'>
+				
+				
+				
+				
+			<div  class='energy'>
 					<div  class='energy_layer' id='energy_layer_1'>
 					
 					<div  class='energy_layer' id='energy_layer_2'>
@@ -59,13 +72,10 @@ echo("
 				</div>
 				</div>
 				</div>
-				
-				
-				
-			
-			<center>
+		
 				
 				<section id='game'>
+				
 					<div class='circle' id='1' data-circle='null'>
 						<footer class='timer' id='timer_1'>
 							7
@@ -155,7 +165,7 @@ echo("
 				    </button>
 				</section>
 				
-			</center>
+		
 			
 			
 				<!--
