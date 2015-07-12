@@ -102,17 +102,19 @@
 	      	cookies = document.cookie;
 	      	exist   = false;
 	     
-	             if (cookies.indexOf(name) != 1)
+	             if (cookies.indexOf(name) != -1)
 	                exist = true;
 	             else
 	             	exist = exist;
+	             	
+	             	return exist;
 	      }catch(ex){
 	      	
 	      }finally{
 	      	
 	      }
            
-      return exist;
+      
     },
     
      /* This function returns a value of a key in the cookie file

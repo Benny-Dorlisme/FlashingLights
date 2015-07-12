@@ -10,7 +10,7 @@
 			if($mysql->query("select * from sessions where id ='". $id."' limit 1")->fetch_row() == 0){
 			
 				$mysql->query("insert into sessions (id , data , status, time_accessed) 
-				values(('". $id . "'),
+				values(('". sha1($id) . "'),
 			 	(''), 
 			 	(1) ,
 			  	(NOW())) on duplicate key update status = 1,time_accessed = NOW()");

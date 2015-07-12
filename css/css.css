@@ -1,4 +1,4 @@
-@media screen and (max-height : 995px) and (max-width : 1920px){
+
 	
 html{
 	margin:0px;
@@ -28,6 +28,7 @@ background-color: gold;
 	border:solid 2px black;
 	z-index:50;
 	background-color: silver;
+	height:60%;
 	
 	
 	
@@ -71,10 +72,11 @@ background-color: gold;
 .timer{
 	
 	
-		width:10%;
+	width:50%;
 	position: relative;
 	float:right;
-	top:80%;
+	top:90%;
+	left:20%;
 	height:20%;
 	font-family:Futura, Rockwell
 	
@@ -82,10 +84,10 @@ background-color: gold;
 }
 
 .energy{
-	height:5%;
+	height:10%;
 	border:solid 2px;
-	width:35%;
-	margin: auto 33%;
+	width:50%;
+	margin: auto ;
 	background-color:grey;
 }
 
@@ -105,25 +107,34 @@ background-color: gold;
 	background:linear-gradient(45deg ,gold,yellow );
 }
 #energy_layer_3{
-	
 	height:100%;
 	background-color:green;
-
 	background:linear-gradient(45deg ,green,lightgreen);
+
+	
+}
+.time_bar{
+	width:100%;
 	
 }
 
-
 [data-circle='good']{
-
-    background-color:green;
+background-color:green;
 }  
 [data-circle='bad'] {
- background-color:red;
+background-color:red;
 }
 [data-circle='null']{
- 
-
-    background-color:white;
+background-color:white;
 }
+meter { -webkit-appearance: none; }
+meter::-webkit-meter-optimum-value {
+    background: green;
+    background: -moz-linear-gradient(top, #a1d4e6 0%, #6bb4d1 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, lightgreen), color-stop(100%, darkgreen));
+    background: -webkit-linear-gradient(top, lightgreen 0%, darkgreen 100%);
+    background: -o-linear-gradient(top, #a1d4e6 0%, #6bb4d1 100%);
+    background: -ms-linear-gradient(top, #a1d4e6 0%, #6bb4d1 100%);
+    background: linear-gradient(to left, #lightgreen 0%, darkgreen 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#a1d4e6', endColorstr='#6bb4d1',GradientType=0);
 }

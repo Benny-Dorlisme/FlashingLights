@@ -1,4 +1,8 @@
 //this to do when window closes
+/*
+ * need too fix this
+ * need to figure out how to fire this in every instance where the window closes or the location of the window is changed
+ */
 window.onbeforeunload = function(){
    Ajax.turnSessionOff();
 };
@@ -11,6 +15,7 @@ window.onload = function(){
 		 //next add a listener to the player_name input box so player can set their name 
 		    document.getElementById("player_name").addEventListener("blur" , function(){
 			    try{
+			    	//need to change name of session cookie
 			    	var id = CookieFile.getCookieValue("PHPSESSID");
        				
 				    Game.Player.name = this.value;
@@ -35,10 +40,39 @@ window.onload = function(){
 					
 					$("#"+e.target.id).css("box-shadow" , "-3px 3px 5px black");
 				});
+				
 			}
 			
 			
 	}catch(ex){
 		
 	}
+CustomEvents = {
+	
+	circleTimeUp : null,
+	
+	initCustomEvents : function(){
+		
+		this.circleTimeUp = new CustomEvent("circletimeup");
+		for(var i = 1; i < 17; i++ ){
+			
+			document.getElementById(""+i).addEventListener("circletimeup" , function(element){
+				
+				if(Game.Driver.getNumberOfGreenCircles() > 0){
+                    	
+                    	Game.Interface.Hud.attempts_left--;
+                                       	
+                         document.getElementById("current_number_of_trys_left").innerHTML = Game.Interface.Hud.attempts_left;
+                         Game.Driver.turnCircleOff(i);
+                         if(Game.Driver.getNumberOfGreenCircles() == 0 && Game.Data.game_over == false)
+                         	Game.Driver.lightCircles();
+                         if(Game.Interface.Hud.attempts_left == 0)
+                         	Game.Driver.endGame();
+               }
+			});
+		}
+	}
+	
+	
+};
 };

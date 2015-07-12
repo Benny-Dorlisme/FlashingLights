@@ -1,6 +1,5 @@
 <?php
 
-
 function getIPAddress(){
 
     return $_SERVER["REMOTE_ADDR"];
@@ -61,17 +60,13 @@ function getOS(){
     }catch(Exception $ex){
     }    
 }
-function getSessionId(){
-
-    
-}
 function getSystem(){
 
 
     try{
          $ip = $_SERVER['REMOTE_ADDR'];
          $os = $_SERVER['HTTP_USER_AGENT'];
-         echo(toArray($os)->indexOf(2));
+        
     }
     catch(Exception $ex){
     
@@ -86,9 +81,11 @@ function isCookieSet($cookie){
 };
 function setSiteCookies(){
 	
-	setcookie("vists","0",date(DATE_COOKIE,60*60*24*30*12));
+	setcookie("visits","1",time()+60*60*24*30*12);
+	
 	
 }
+
 
 
 ?>

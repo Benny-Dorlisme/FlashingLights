@@ -1,7 +1,18 @@
 //Author: Benny Dorlisme
 
  Game = {
-      
+       /*  Object representing the player
+        * ********************************
+        *  @param name                    ******************************
+        *  The player's name. The player can change it at any time.***** 
+        *  @param score                                              ***
+        *  The player's current score.                               ***
+        *  @param skills                                             ***
+        *  The skills currently avaiable to the player.              ***
+        *  @param highscore                                          ***
+        *  The highest score the player has ever accumulated.        ***
+        * **************************************************************
+        */
          Player : {
         
             name : null,
@@ -9,6 +20,18 @@
             skills : null,
             highscore : null,
             
+        /*  Object representing the player's computer
+        * *******************************************
+        *  @param os                                **
+        *  The operating system the player is using.**                 
+        *  @param broswer                           **                  
+        *  The browser the player is using.         **                     
+        *  @param ip_address                        **                   
+        *  The ip address of the player is using.   **       
+        *  @param mac_address                       **            
+        *  The mac address of the player's computer.**      
+        * ********************************************
+        */
             System : {
                 
                 os : null,
@@ -17,6 +40,7 @@
                 mac_address : null
                   
             },
+            //Function to initialize the Player Object.
             initPlayer : function(){
         
              // need to find a way to fully init player 
@@ -38,9 +62,24 @@
              }
          
         },
-        
+        /*  Object representing the game's interface
+        * ******************************************
+        * @param circles
+        * an array to hold the circles in the interface
+        */
         Interface : {
-        
+        /*  Object representing the game's hud
+        * ************************************
+        *  @param player_name                 *********************************************
+        *  The player's name to be displayed in the hud.                              ***** 
+        *  @param player_score                                                          ***
+        *  The player's current score to be displayed in the hud.                       ***
+        *  @param attempts_left                                                         ***
+        *  The number of attempts the player has left to play the game                  ***
+        *  @param highscore                                                             ***
+        *  The highest score the player has ever accumulated to be displayed in the hud.***
+        * *********************************************************************************
+        */
             Hud : {
                   
                 player_name : null,
@@ -49,6 +88,14 @@
                 highscore : null
                 
             },
+        /*  Object representing all the possible outcomes of the game's circles
+        * **********************************************************************
+        *  @param number_of_possibilities         ******************************
+        *  The the number of possible outcomes                             ***** 
+        *  @param array                                                      ***
+        *  An array to hold realtime outcomes                                ***
+        * **********************************************************************
+        */
             possibilities : {
                 
                 number_of_possibilities : Math.pow(16,3),
@@ -59,9 +106,23 @@
 
             },
             circles : [],
+            
+            /*  Object representing skills currently in the interface
+       		 * ******************************************************
+        	 * @param box                                        ****
+        	 * an array of the skills                             ***
+        	 * ******************************************************
+        	 */
             skills : {
             		box:[]
             },
+            /*  Object representing the energybar in the interface
+       		 * ******************************************************
+        	 * @param value                                       ****
+        	 * A value representing the player' energy
+        	 *                              ***
+        	 * ******************************************************
+        	 */
             energybar : {
             				value:null,
             				setEnergyBar:function(number){
@@ -96,8 +157,9 @@
                             
                               for(var i = 0; i < 16; i++){
                                        this.circles.push({status:"null",last_status:"null",clicked:false,target:"null",Timer :  { timer_interval:null,timer_timeout : null, active : null, time : null, startTimer : function(i){  
+                                       	
                                        	this.active = true; 
-                                       	this.time = Math.ceil((((Math.random() * 3000) + 1000) / 1000) ) * 1000; 
+                                       	this.time = Math.ceil((((Math.random() * 4000) + 1000) / 1000) ) * 1000; 
                                        	var v = (this.time - 1000) / 1000;
                                        	 
                                        	this.timer_timeout = setTimeout(function(){
@@ -108,7 +170,8 @@
                                        	
                                        		document.getElementById("current_number_of_trys_left").innerHTML = Game.Interface.Hud.attempts_left;
                                        		Game.Driver.turnCircleOff(i);
-                                       		if(Game.Driver.getNumberOfGreenCircles() == 0&& Game.Data.game_over == false)
+                                       		//this might be effecting the gammes level got to check.
+                                       		if(Game.Driver.getNumberOfGreenCircles() == 0 && Game.Data.game_over == false)
                                        			Game.Driver.lightCircles();
                                        	}	
                                        	console.log("from timeout" + i);
@@ -121,25 +184,13 @@
                                        	 		clearInterval(Game.Interface.circles[i].Timer.timer_interval);
                                        			return;
                                        		}
-                                       		  //  console.log(v);
-                                       			console.log("from interval "+ Game.Interface.circles[i].Timer.timer_interval +" "+v);
-                                       			
-                                       			switch(v){
-                                       				case 3 :document.getElementById("timer_"+(i+1)).innerHTML = 3;
-                                       				break;
-                                       				case 2: document.getElementById("timer_"+(i+1)).innerHTML = 2;
-                                       				break;
-                                       				case 1: document.getElementById("timer_"+(i+1)).innerHTML = 1;
-                                       				break;
-                                       				case 0: document.getElementById("timer_"+(i+1)).innerHTML = 0;
-                                       						
-                                       						clearInterval(Game.Interface.circles[i].Timer.timer_interval);
-                                       				break;
-                                       				default:clearInterval(Game.Interface.circles[i].Timer.timer_interval);
-                                       				break;
-                                       			}
-												v--;
-                                       		}, 1000);
+                                       		   console.log($("#time_bar" + (i+1)).attr("value"));
+                                       			$("#time_bar" + (i+1)).attr("value" , v);
+												v -= 0.1;
+												if(v < 0)
+												return;
+                                       		}, 100);
+                                       		
                                         } }});
                                        $("#"+(i+1)).click(function(e){
         	                                        Game.Interface.circles[e.target.id - 1].target = e.target.id - 1;
@@ -280,7 +331,7 @@
 	 	                             var m = undefined;
 	 	                             switch(Math.floor(Game.Data.level)){
 	 	                             	
-	 	                             	case 0: {
+	 	                             	case 0 : {
 	 	                             				m = Math.round(Math.random()*6);
 	 	                             				if(m > 3){
 		 	                             				while(Math.random()<0.2){
