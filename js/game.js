@@ -160,6 +160,7 @@
                                        	
                                        	this.active = true; 
                                        	this.time = Math.ceil((((Math.random() * 4000) + 1000) / 1000) ) * 1000; 
+                                       	
                                        	var v = ((this.time - 1000) / 1000) +1;
                                        
                                       
@@ -170,13 +171,16 @@
                                        			return;
                                        		}
                                       
-                                       			$("#time_bar" + (i+1)).attr("value" , v);
-										                                 		v -= 0.1;
-                                           this.time = v;
-										                                     		if(v.toFixed(1) == 0)	{
+                                       			$("#time_bar" + (i+1)).attr("value" , v.toFixed(1));
+										     v -= 0.1;
+                                           Game.Interface.circles[i].Timer.time = v.toFixed(1);
+                                           
+										         if(v.toFixed(1) == 0.0 || v.toFixed(1) < 0 || v.toFixed(1) == -0.0)	{
                                                   this.active = false;
-												                                       	Game.Interface.Hud.attempts_left--;
-                                       	            clearInterval(this.timer_interval);
+                                                  $("#time_bar" + (i+1)).attr("value" , 0);
+												     Game.Interface.Hud.attempts_left--;
+                                       	            clearInterval(Game.Interface.circles[i].Timer.timer_interval);
+                                       	            
                                                   document.getElementById("current_number_of_trys_left").innerHTML = Game.Interface.Hud.attempts_left;
                                                   Game.Driver.turnCircleOff(i);
                                                  if(Game.Driver.getNumberOfGreenCircles() == 0 && Game.Data.game_over == false)
@@ -189,11 +193,9 @@
                                         },
                                         moveTimerToCircle : function(current_circle_number , new_circle_number ){
                                            
-                                          Game.Interface.circles[new_circle_number].Timer =  Game.Interface.circles[current_circle_number].Timer;
-                                          Game.Interface.circles[current_circle_number].Timer.time = 0;
-                                          Game.Interface.circles[current_circle_number].Timer.active = false;
-                                          clearInterval(Game.Interface.circles[current_circle_number].Timer.timer_interval);
-                                          document.write(Game.Interface.circles[current_circle_number].Timer.time);
+                                         console.log("old :" + current_circle_number);
+                                         console.log("new: "+new_circle_number);
+                                         
                                           }
                                          }});
                                        $("#"+(i+1)).click(function(e){
@@ -205,7 +207,7 @@
               },
               clickedCircle : function(circle_number){
 	
-		                              console.log("from clcikedCircle: "+circle_number);
+		                            
 		                              if(Game.Data.game_over === true)
 			                                         return;
 			
@@ -214,6 +216,7 @@
 		                             		
 		                             	//			  clearTimeout(this.circles[circle_number].Timer.timer_timeout);
 		                             				  clearInterval(this.circles[circle_number].Timer.timer_interval);	
+		                             				   $("#time_bar" + (circle_number+1)).attr("value" , 0);
 			                                          Game.Player.score = Game.Player.score + 10;
 			                                          if(Game.Player.score > Game.Player.highscore)
 			                                          		localStorage.highscore = Game.Player.score;
@@ -476,16 +479,18 @@
             changeGreenCirclePostion : function(){
 		                                         var new_position = Math.floor(Math.random() * 16);
 		                                         for(var i = 1; i <16; i++){
-			                                                  if(Game.Interface.circles[i].status == "good"){
+			                                                  if(Game.Interface.circles[i-1].status == "good"){
 				                                                          this.turnCircleOff(i);	
-				                                                          Game.Interface.circles[i].Timer.moveTimerToCircle(i,new_position);
+				                                                          
 				                                                          break;
 			                                                   }		
 			                                                   		
 		                                         }
-		                                         while(new_position == i || new_position == 0 || new_position == 16)
+		                                         while(new_position == i || new_position == 0 || new_position == 16){
 			                                                       new_position = Math.floor(Math.random() * 16);	
-		
+			                                                       Game.Interface.circles[i].Timer.moveTimerToCircle(i,new_position);
+			                                     }
+		                                    
                                            Game.Interface.circles[new_position].status = "good";
                                            $("#" + (new_position+1)).attr("data-circle" , "good");
              },
