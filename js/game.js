@@ -160,38 +160,42 @@
                                        	
                                        	this.active = true; 
                                        	this.time = Math.ceil((((Math.random() * 4000) + 1000) / 1000) ) * 1000; 
-                                       	var v = (this.time - 1000) / 1000;
-                                       	 
-                                       	this.timer_timeout = setTimeout(function(){
-                                       		if(Game.Data.game_over == true)
-                                       			return;
-                                       	if(Game.Driver.getNumberOfGreenCircles() > 0){
-                                       		Game.Interface.Hud.attempts_left--;
-                                       	
-                                       		document.getElementById("current_number_of_trys_left").innerHTML = Game.Interface.Hud.attempts_left;
-                                       		Game.Driver.turnCircleOff(i);
-                                       		//this might be effecting the gammes level got to check.
-                                       		if(Game.Driver.getNumberOfGreenCircles() == 0 && Game.Data.game_over == false)
-                                       			Game.Driver.lightCircles();
-                                       	}	
-                                       	console.log("from timeout" + i);
-                                       	if(Game.Interface.Hud.attempts_left == 0)
-                                       		Game.Driver.endGame();
-                                       		
-                                       }, this.time);
+                                       	var v = ((this.time - 1000) / 1000) +1;
+                                       
+                                      
                                        this.timer_interval = setInterval(function(){
+                                        
                                        	 	if(Game.Data.game_over == true){
                                        	 		clearInterval(Game.Interface.circles[i].Timer.timer_interval);
                                        			return;
                                        		}
-                                       		   console.log($("#time_bar" + (i+1)).attr("value"));
+                                      
                                        			$("#time_bar" + (i+1)).attr("value" , v);
-												v -= 0.1;
-												if(v < 0)
-												return;
+										                                 		v -= 0.1;
+                                           this.time = v;
+										                                     		if(v.toFixed(1) == 0)	{
+                                                  this.active = false;
+												                                       	Game.Interface.Hud.attempts_left--;
+                                       	            clearInterval(this.timer_interval);
+                                                  document.getElementById("current_number_of_trys_left").innerHTML = Game.Interface.Hud.attempts_left;
+                                                  Game.Driver.turnCircleOff(i);
+                                                 if(Game.Driver.getNumberOfGreenCircles() == 0 && Game.Data.game_over == false)
+                                                   	Game.Driver.lightCircles();
+                                                 if(Game.Interface.Hud.attempts_left == 0)
+                                                     	Game.Driver.endGame();
+                                    	           }
                                        		}, 100);
                                        		
-                                        } }});
+                                        },
+                                        moveTimerToCircle : function(current_circle_number , new_circle_number ){
+                                           
+                                          Game.Interface.circles[new_circle_number].Timer =  Game.Interface.circles[current_circle_number].Timer;
+                                          Game.Interface.circles[current_circle_number].Timer.time = 0;
+                                          Game.Interface.circles[current_circle_number].Timer.active = false;
+                                          clearInterval(Game.Interface.circles[current_circle_number].Timer.timer_interval);
+                                          document.write(Game.Interface.circles[current_circle_number].Timer.time);
+                                          }
+                                         }});
                                        $("#"+(i+1)).click(function(e){
         	                                        Game.Interface.circles[e.target.id - 1].target = e.target.id - 1;
                                                 Game.Interface.clickedCircle(e.target.id - 1);
@@ -208,7 +212,7 @@
 			                              this.circles[circle_number].target = "null";
 		                             if(this.circles[circle_number].status == "good"){
 		                             		
-		                             				  clearTimeout(this.circles[circle_number].Timer.timer_timeout);
+		                             	//			  clearTimeout(this.circles[circle_number].Timer.timer_timeout);
 		                             				  clearInterval(this.circles[circle_number].Timer.timer_interval);	
 			                                          Game.Player.score = Game.Player.score + 10;
 			                                          if(Game.Player.score > Game.Player.highscore)
@@ -259,7 +263,7 @@
 				                                                                if(this.circles[i].status == "bad")
 			    	                                                                     Game.Driver.turnCircleOff(i);
 			                                                      }
-						                                                    //clearTimeout(time);
+						                                                  
 					 	                                                  Game.Driver.lightCircles();
 					 	                                                  if(Game.Driver.getNumberOfGreenCircles == 0 && Game.Driver.getNumberOfRedCircles == 0)
 					 	                                                  	Game.Driver.lightCircles();						
@@ -474,7 +478,7 @@
 		                                         for(var i = 1; i <16; i++){
 			                                                  if(Game.Interface.circles[i].status == "good"){
 				                                                          this.turnCircleOff(i);	
-				                                                          Game.Interface.circles[i].Timer.startTimer(i);
+				                                                          Game.Interface.circles[i].Timer.moveTimerToCircle(i,new_position);
 				                                                          break;
 			                                                   }		
 			                                                   		

@@ -32,12 +32,12 @@ window.onload = function(){
 			// need to fix that
 			for(var i =0; i < 16; i++){
 				document.getElementById(""+(i+1)).addEventListener("mousedown",function(e){
-					console.log(e);
+					if(e.target.id.indexOf("time") == -1)
 					$("#"+e.target.id).css("box-shadow" , "0px 0px 0px");
 				});
 				document.getElementById(""+(i+1)).addEventListener("mouseup",function(e){
 				
-					
+					 if(e.target.id.indexOf("time") == -1)
 					$("#"+e.target.id).css("box-shadow" , "-3px 3px 5px black");
 				});
 				
