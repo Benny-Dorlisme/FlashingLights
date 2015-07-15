@@ -176,12 +176,24 @@ echo("
 							</meter>
 						</footer>
 					</div>
-					<div class='skill' id='skill1'>
+					
+					<div id='skills_container'>
+						<ul>
+							<li>
+								<div class='skill' id='skill1'>
+								</div>
+							</li>
+							<li>
+								<div class='skill' id='skill2'>
+								</div>
+							</li>
+							<li>
+								<div class='skill' id='skill3'>
+								</div>
+							</li>
+						</ul>
 					</div>
-					<div class='skill' id='skill2'>
-					</div>
-					<div class='skill' id='skill3'>
-					</div>
+					
 				</section>
 				
 		<button id='start_game' >

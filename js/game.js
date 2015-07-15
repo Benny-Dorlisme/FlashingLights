@@ -156,20 +156,23 @@
                               document.getElementById("current_number_of_trys_left").innerHTML = this.Hud.attempts_left;
                             
                               for(var i = 0; i < 16; i++){
-                                       this.circles.push({status:"null",last_status:"null",clicked:false,target:"null",Timer :  { timer_interval:null,timer_timeout : null, active : null, time : null, startTimer : function(i){  
+                                       this.circles.push({status:"null",last_status:"null",clicked:false,target:"null",Timer :  { is_paused : false , timer_interval:null,timer_timeout : null, active : null, time : null, startTimer : function(i){  
                                        	
                                        	this.active = true; 
                                        	this.time = Math.ceil((((Math.random() * 4000) + 1000) / 1000) ) * 1000; 
                                        	
                                        	var v = ((this.time - 1000) / 1000) +1;
                                        
-                                      
+                                      console.log("circle timer started : " + i);
                                        this.timer_interval = setInterval(function(){
                                         
                                        	 	if(Game.Data.game_over == true){
                                        	 		clearInterval(Game.Interface.circles[i].Timer.timer_interval);
                                        			return;
                                        		}
+                                       		if(Game.Interface.circles[i].Timer.is_paused == true)
+                                       			return;
+                                       		
                                       
                                        			$("#time_bar" + (i+1)).attr("value" , v.toFixed(1));
 										     v -= 0.1;
@@ -187,20 +190,74 @@
                                                    	Game.Driver.lightCircles();
                                                  if(Game.Interface.Hud.attempts_left == 0)
                                                      	Game.Driver.endGame();
+                                                     	
+                                                     	console.log("circle timer that ran out :" + i );
                                     	           }
                                        		}, 100);
-                                       		
                                         },
+                                        
                                         moveTimerToCircle : function(current_circle_number , new_circle_number ){
                                            
-                                         console.log("old :" + current_circle_number);
-                                         console.log("new: "+new_circle_number);
-                                         
+                                          
+                                          Game.Interface.circles[new_circle_number].Timer.active = Game.Interface.circles[current_circle_number].Timer.active;
+                                          Game.Interface.circles[new_circle_number].Timer.time = Game.Interface.circles[current_circle_number].Timer.time; 
+                                          Game.Interface.circles[new_circle_number].Timer.timer_interval = Game.Interface.circles[current_circle_number].Timer.timer_interval;
+                                         // console.log("new circle time: "+ Game.Interface.circles[new_circle_number].Timer.timer_interval );
+                                        //  console.log("old circle time: "+Game.Interface.circles[current_circle_number].Timer.timer_interval );
+                                         var new_time = Game.Interface.circles[new_circle_number].Timer.time;
+                                          Game.Interface.circles[current_circle_number].Timer.time = 0;
+                                          Game.Interface.circles[current_circle_number].Timer.active = false;
+                                          clearInterval(Game.Interface.circles[current_circle_number].Timer.timer_interval);
+                                          $("#time_bar" + (current_circle_number+1)).attr("value" , 0);
+                                           
+                                           Game.Interface.circles[new_circle_number].Timer.timer_interval = setInterval(function(){
+                                        
+                                       	 	if(Game.Data.game_over == true){
+                                       	 		clearInterval(Game.Interface.circles[new_circle_number].Timer.timer_interval);
+                                       			return;
+                                       		}
+                                      
+                                       			$("#time_bar" + (new_circle_number+1)).attr("value" , parseFloat(new_time).toFixed(1));
+                                       		
+										     new_time -= 0.1;
+                                           Game.Interface.circles[new_circle_number].Timer.time = new_time.toFixed(1);
+                                           
+										         if(new_time.toFixed(1) == 0.0 || new_time.toFixed(1) < 0 || new_time.toFixed(1) == -0.0)	{
+                                                  Game.Interface.circles[new_circle_number].Timer.active = false;
+                                                  $("#time_bar" + (new_circle_number+1)).attr("value" , 0);
+												     Game.Interface.Hud.attempts_left--;
+                                       	            clearInterval(Game.Interface.circles[new_circle_number].Timer.timer_interval);
+                                       	            
+                                                  document.getElementById("current_number_of_trys_left").innerHTML = Game.Interface.Hud.attempts_left;
+                                                  Game.Driver.turnCircleOff(new_circle_number);
+                                                 if(Game.Driver.getNumberOfGreenCircles() == 0 && Game.Data.game_over == false)
+                                                   	Game.Driver.lightCircles();
+                                                   	console.log("still in resumed timer function number :" + new_circle_number);
+                                                   	
+                                                 if(Game.Interface.Hud.attempts_left == 0)
+                                                     	Game.Driver.endGame();
+                                                     	
+                                                     	console.log("circle timer that ran out :" + new_circle_number );
+                                    	           }
+                                       		}, 100);
+                                       		console.log("old position : " + current_circle_number);
+											console.log("new position : " + new_circle_number);
+											console.log($("#time_bar" + (current_circle_number+1)).attr("value"));
+											console.log("circle timer resumed : " + new_circle_number);
+                                    //     console.log("new circle time: "+ Game.Interface.circles[new_circle_number].Timer.timer_interval );
                                           }
                                          }});
                                        $("#"+(i+1)).click(function(e){
+                                       				
+													if(e.target.id.indexOf("time") == -1){
         	                                        Game.Interface.circles[e.target.id - 1].target = e.target.id - 1;
                                                 Game.Interface.clickedCircle(e.target.id - 1);
+                                                }else{
+                                                	e.preventDefault();
+                                                	return;
+                                                }
+                                                	
+                                               
                                         });
   
                               }
@@ -208,9 +265,11 @@
               clickedCircle : function(circle_number){
 	
 		                            
-		                              if(Game.Data.game_over === true)
+		                              if(Game.Data.game_over == true)
 			                                         return;
-			
+			                          if(Game.Interface.circles[circle_number].Timer.is_paused == true)
+                                       			return;               
+			console.log("circle clicked on : "+ circle_number);
 			                              this.circles[circle_number].target = "null";
 		                             if(this.circles[circle_number].status == "good"){
 		                             		
@@ -226,7 +285,7 @@
 			                                          $("#" + (circle_number+1)).attr("data-circle" , "null");
 			                                          for(var i = 0; i <16; i++){
 			 	                                                 if(this.circles[i].status == "bad"){
-						
+																				console.log("this is bad :" + i);
 					                                                           Game.Driver.turnCircleOff(i);
 					                                                           Game.Interface.circles[i].last_status = "bad";
 					                                                           Game.Driver.lightCirclesRed(i);
@@ -236,6 +295,7 @@
 	                                              		}
 
 		                                              if(Game.Driver.getNumberOfGreenCircles() == 0){
+		                                              	console.log("ran out of green circles");
 			     		                                                if(Game.Data.level < 1)
 			     		                                                	Game.Data.level = Game.Data.level + 0.1;
 			     		                                                else if(Game.Data.level > 1 && Game.Data.level < 3)
@@ -267,16 +327,15 @@
 			    	                                                                     Game.Driver.turnCircleOff(i);
 			                                                      }
 						                                                  
-					 	                                                  Game.Driver.lightCircles();
+					 	                                                  
 					 	                                                  if(Game.Driver.getNumberOfGreenCircles == 0 && Game.Driver.getNumberOfRedCircles == 0)
-					 	                                                  	Game.Driver.lightCircles();						
+					 	                                                  	Game.Driver.lightCircles();		
+					 	                                                  else
+					 	                                                  	Game.Driver.lightCircles();				
 			                                                      }else{
 				
 			 	                                                         if(Math.floor(Math.random() * 16) > 8)
-			 	                    											Game.Driver.changeGreenCirclePostion();
-					                                                               
-					                                                            
-					                                                     
+			 	                    											Game.Driver.changeGreenCirclePostion();  
 			                                                       }
 		
 		                              }else if(this.circles[circle_number].status == "null"){
@@ -296,6 +355,7 @@
 			                                                	Game.Driver.endGame();
 		                                                	
 		                              }
+		                            //  console.log("circle timer status : " + this.circles[circle_number].Timer.active);
 		
 	             }
              
@@ -448,7 +508,7 @@
 		                          for(var i = 0; i < Math.floor(m); i++)
 	 		                                      this.lightCirclesRed();
 	 		
-	                                  // timer.circleTimer();
+	                          
 	
                             for(var i = 0; i <= 15; i ++)
                                     array.push(Game.Interface.circles[i].status);
@@ -475,24 +535,29 @@
 	
 		                                  Game.Interface.circles[circle_position].status = "null";
 		                                  $("#" + (circle_position+1)).attr("data-circle" , "null");
+		                                  console.log("circle turn off : " + circle_position);
             },
             changeGreenCirclePostion : function(){
 		                                         var new_position = Math.floor(Math.random() * 16);
-		                                         for(var i = 1; i <16; i++){
-			                                                  if(Game.Interface.circles[i-1].status == "good"){
-				                                                          this.turnCircleOff(i);	
+		                                         for(var i = 0; i <16; i++){
+			                                                  if(Game.Interface.circles[i].status == "good"){
 				                                                          
+				                                                          while(new_position == i || $("#" + (new_position+1)).attr("data-circle") == "good" || $("#" + (new_position+1)).attr("data-circle") == "bad")
+			                                             						new_position = Math.floor(Math.random() * 16);	
+			                                             						this.turnCircleOff(i);
+			                                             						Game.Interface.circles[i].Timer.moveTimerToCircle(i,new_position);
+                                           										Game.Interface.circles[new_position].status = "good";
+                                           										$("#" + (new_position+1)).attr("data-circle" , "good");
+				                                                         					                                                          
 				                                                          break;
 			                                                   }		
 			                                                   		
 		                                         }
-		                                         while(new_position == i || new_position == 0 || new_position == 16){
-			                                                       new_position = Math.floor(Math.random() * 16);	
-			                                                       Game.Interface.circles[i].Timer.moveTimerToCircle(i,new_position);
-			                                     }
-		                                    
-                                           Game.Interface.circles[new_position].status = "good";
-                                           $("#" + (new_position+1)).attr("data-circle" , "good");
+		                                        
+			                                                    
+			                                     
+											
+											
              },
              getNumberOfGreenCircles : function(){
 		                                         var number_of_circles = 0;
@@ -507,7 +572,7 @@
 		
 		                                        var position = {};
 		
-		                                        for(var i = 1; i <16; i++){
+		                                        for(var i = 0; i <16; i++){
 			                                                   if(Game.Interface.circles[i] === "good")
 				                                                             position.push(i);
 			
@@ -520,9 +585,11 @@
 		                                                   Game.Interface.circles[circle_position].last_status = "null";
 		                                                   Game.Interface.circles[circle_position].Timer.startTimer(circle_position);
 		                                                   $("#" + (circle_position+1)).attr("data-circle" , "good");
-		                                                   
+		                                                   console.log("this circle is good" + circle_position);
 		                                   }else
 			                                                  this.lightCirclesGreen();
+			                                                  
+			                                                  
             },
 	
             lightCirclesGreen : function(){
@@ -629,13 +696,25 @@
 	                             	}
 		                             return number_of_circles;
            },
-           endGame: function(){
+           endGame : function(){
            		
            		Game.Data.game_over=true;
            		this.status = false;
            		if(Game.Player.score > Game.Player.highscore)
            			localStorage.highscore = Game.Player.score;  
            		console.log("gameOver");
+           },
+           pauseGame : function(){
+           	
+           	for(var i = 0; i < 16; i++)
+           		Game.Interface.circles[i].Timer.is_paused = true;
+           	
+           },
+           unPauseGame : function(){
+           	
+           	for(var i = 0; i < 16; i++)
+           		Game.Interface.circles[i].Timer.is_paused = false;
+           	
            }
            
         

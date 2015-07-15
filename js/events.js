@@ -44,35 +44,8 @@ window.onload = function(){
 			}
 			
 			
+			
 	}catch(ex){
 		
 	}
-CustomEvents = {
-	
-	circleTimeUp : null,
-	
-	initCustomEvents : function(){
-		
-		this.circleTimeUp = new CustomEvent("circletimeup");
-		for(var i = 1; i < 17; i++ ){
-			
-			document.getElementById(""+i).addEventListener("circletimeup" , function(element){
-				
-				if(Game.Driver.getNumberOfGreenCircles() > 0){
-                    	
-                    	Game.Interface.Hud.attempts_left--;
-                                       	
-                         document.getElementById("current_number_of_trys_left").innerHTML = Game.Interface.Hud.attempts_left;
-                         Game.Driver.turnCircleOff(i);
-                         if(Game.Driver.getNumberOfGreenCircles() == 0 && Game.Data.game_over == false)
-                         	Game.Driver.lightCircles();
-                         if(Game.Interface.Hud.attempts_left == 0)
-                         	Game.Driver.endGame();
-               }
-			});
-		}
-	}
-	
-	
-};
 };
