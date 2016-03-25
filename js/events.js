@@ -16,12 +16,12 @@ window.onload = function(){
 		    document.getElementById("player_name").addEventListener("blur" , function(){
 			    try{
 			    	//need to change name of session cookie
-			    	var id = CookieFile.getCookieValue("PHPSESSID");
-       				
+			    	var id = CookieFile.getCookieValue("fls");
+       				console.log(document.cookie);
 				    Game.Player.name = this.value;
 					Ajax.setPlayerName(Game.Player.name , id);
 				}catch(ex){
-					
+					console.log(ex);
 				}finally{
 					
 				}

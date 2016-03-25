@@ -133,16 +133,15 @@
     		if(this.doesCookieExist(key)){
         
         if(cookies.indexOf(";" , key ) == -1)
-              value = cookies.substring(cookies.indexOf("=")+1 , cookies.length);
-    			else
-          value = cookies.substring(cookies.indexOf("=") , cookies.indexOf(";" , cookies.indexOf(key)));
-   
+        	value = cookies.substring(cookies.indexOf(key)+(key.length + 1 ));
+        else
+        	value = cookies.substring(cookies.indexOf(key)+(key.length + 1 ) , cookies.indexOf(";" , cookies.indexOf(key)));
     			return value;
     		}else{
     			throw new Error();
     		}
     	}catch(ex){
-    		
+    		console.log(ex);
     	}finally{
     		
     	}

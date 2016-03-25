@@ -1,30 +1,66 @@
 <?php
+
+if($_SERVER["REQUEST_METHOD"] != "GET")
+	exit;
 include("functions.php");
-
-if(isset($_GET['status'])){
+if(isset($_GET['id']) && !empty($_GET['id']))
+	$id = htmlentities($_GET['id']);
+else
+	exit;
+$mysql = new mysqli("127.0.0.1" ,"root", "", "flashing_lights");
+if(!mysqli){
+	echo "db error!";
+	exit;
+}
+if(isset($_GET['status']) && !empty($_GET['status'])){
 	if($_GET['status'] == 0){
-		$mysql = new mysqli("127.0.0.1" ,"root", "", "flashing_lights");
-		if($mysql->query("select * from sessions where id ='". $_GET['id']."' limit 1")->fetch_row() == 0)
+		$stmt = $mysql->prepare("select * from sessions where id = ? limit 1");
+		$stmt->bind_param("s",$id);
+		$s = $stmt->execute();
+		$stmt->close();
+		if( $s == 0)
 			return;
-		else
-			$mysql->query("update  sessions  set status = 0 , time_accessed = now() where  id ='" . $_GET['id'] ."' limit 1" );
-			 
-		$mysql->close();
-	}
-}else if(isset($_GET['username'])){
-
-		$mysql = new mysqli("127.0.0.1" ,"root", "", "flashing_lights");
-		if($mysql->query("select * from user where id ='". $_GET['id']."' limit 1")->fetch_row > 0){
-			echo("That username is already taken please input a different username");
-			return;
-		}
 		else{
-			if($mysql->query("select * from users where id ='". $_GET['id']."' limit 1")->fetch_row() == 0)
-				$mysql->query("insert into  users  (id , name, highscore ) values(('" . $_GET['id'] ."'), ('" . $_GET['username'] ."'),(0))");
-			else 
-				$mysql->query("update users set name = '" . $_GET['username'] ."' where id = '" . $_GET['id'] . "'");
+			$stmt = $mysql->prepare("update sessions set status = 0 , time_accessed = now() where  id = ? limit 1" );
+			$stmt->bind_param("s",$id);
+			$stmt->execute();
+			$stmt->close();
 		}
-		$mysql->close();
+	}else{
+		
+	}
+}else if(isset($_GET['username']) && !empty($_GET['username'])){
+	
+	$name = $_GET["username"];
+	$stmt = $mysql->prepare("select * from users where id = ? and name = ? limit 1");
+	$stmt->bind_param("ss",$id, $name);
+	$stmt->execute();
+
+	$s = $stmt->fetch();
+	$stmt->close();
+	print_r($s);
+	
+	if($s > 0){
+		echo("That username is already taken please input a different username");
+			return;
+		}else{
+			
+		
+				$stmt = $mysql->prepare("insert into  users  (id , name, highscore ) values(?,?,0)");
+				$stmt->bind_param("ss",$id,$name);
+				$s = $stmt->execute();
+				
+			
+				if(!$s){
+					$stmt = $mysql->prepare("update users set name = ? where id = ?");
+					$stmt->bind_param("ss",$name ,$id);
+					$stmt->execute();
+					
+				}
+				$stmt->close();
+		}
+	
 	
 }
+$mysql->close();
 ?>

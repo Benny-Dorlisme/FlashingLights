@@ -41,10 +41,16 @@ Ajax = 	{
     		if(window.XMLHttpRequest){
     			if(this.request == null)
                       this.request = new XMLHttpRequest();
-           
-                this.request.open("GET" , "../php/ajax.php?username=" + player_name+"&id="+id, true);
+         
+                this.request.open("GET" , "../php/ajax.php?username=" + player_name + "&id=" + id, true);
                 this.request.send();
-                
+                this.request.onreadystatechange = function(){
+	                if(Ajax.request.status == 200 && Ajax.request.readyState == 4 ){
+		              				
+		              	console.log(Ajax.request.responseText);
+		              	
+		            }
+	            };
     		}else{
     			if(this.request == null)
                       this.request = new ActiveXObject("Microsoft.XMLHTTP");
@@ -66,18 +72,18 @@ Ajax = 	{
           		 if(this.request == null)
 	                      this.request = new XMLHttpRequest();
 	                    
-          		if(CookieFile.doesCookieExist("PHPSESSID")){
+          		if(CookieFile.doesCookieExist("name")){
           		
-	           		if(cookies.indexOf(";" ,cookies.indexOf("PHPSESSID")) == -1)
-	      				id = cookies.substring(cookies.indexOf("PHPSESSID")+10 ,cookies.length);
+	           		if(cookies.indexOf(";" ,cookies.indexOf("name")) == -1)
+	      				id = cookies.substring(cookies.indexOf("name")+5 ,cookies.length);
 	      			else
-	      				id =cookies.substring(cookies.indexOf("PHPSESSID")+10 ,cookies.indexOf(";"));
+	      				id =cookies.substring(cookies.indexOf("name")+5 ,cookies.indexOf(";"));
 	                
-	                this.request.open("GET","../php/ajax.php?status=0&id="+id,true);
+	                this.request.open("GET","../php/ajax.php?status=0&username="+id,true);
 	                this.request.send();
 	                this.request.onreadystatechange = function(){
 	                         if(Ajax.request.status == 200 && Ajax.request.readyState == 4 ){
-	              
+	              				
 	                         }
 	                };
                }else{

@@ -3,17 +3,25 @@
 include("php/CustomSessionHandler.php");
 include("php/functions.php");
 	 
-	 //need to change name of session cookie
-if(isset($_COOKIE['PHPSESSID'])){
-    
-    $mysql = new mysqli("127.0.0.1" , "root" , ""  , "flashing_lights");
-    if($mysql->query("select * 	from users where id = '" . $_COOKIE['PHPSESSID'] . "' limit 1")->fetch_row() == 0)    
-        $player_name = "Player" . getNumberOfActivePlayers();
-     else{
-        $player_name = $mysql->query("select * 	from users where id = '" . $_COOKIE['PHPSESSID'] . "' limit 1")->fetch_assoc();
-        $player_name = $player_name['name'];
+$mysql = new mysqli("127.0.0.1" , "root" , ""  , "flashing_lights");	
+
+
+
+if(isset($_COOKIE['fls'])){
+   
+  
+	$user_data = $mysql->query("select * from users where id = '{$_COOKIE['fls'] }' limit 1")->fetch_assoc();
+ 	//print_r($_COOKIE);
+    if($user_data){    
+        $player_name = $user_data["name"];
+    	$highscore   = $user_data["highscore"];
+	
+	}else{
+        $player_name = "Player" . (getNumberOfActivePlayers() + 1); 	
+		
      }
 }else{
+ 
  $player_name = "Player" . (getNumberOfActivePlayers() + 1);
 }
 
@@ -25,8 +33,11 @@ if(!isCookieSet("vists"))
 session_set_save_handler(new CustomSessionHandler());
 
 	if(session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
+		session_name("fls");
+    	session_start();
+		$id = $_COOKIE['fls']; 
+} 
+
 echo("
 <!DOCTYPE html>
 <html>
@@ -48,11 +59,12 @@ echo("
 		<div id='game_container'>
 			<section id='hud'>
 				<label for='username'>Username:</label>
-				<input class='hud_item' id='player_name' name='username' value='" . $player_name ."' />
+				<input class='hud_item' id='player_name' name='username' value='{$player_name}' onkeypress=''/>
 				<br />
 				<span class='hud_item'>Score: </span> <span id='current_score'></span>
 				<br />
 				<span class='hud_item' id='number_of_trys'>Trys: </span><span id='current_number_of_trys_left'></span>
+		
 			</section>
 			
 	
@@ -208,7 +220,7 @@ echo("
 				
 		</div>
 		
-		<div id='count_down'>
+		<div id='count_down'>
 			
 		</div>
 	</body>
