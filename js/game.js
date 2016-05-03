@@ -388,7 +388,6 @@
                 Game.Data.initData();
                 Game.Player.initPlayer();
                 Game.Interface.initInterface();
-                CookieFile.initCookies();
                 this.lightCircles();
                 
             

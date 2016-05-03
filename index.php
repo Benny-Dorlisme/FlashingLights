@@ -4,38 +4,41 @@ include("php/CustomSessionHandler.php");
 include("php/functions.php");
 	 
 $mysql = new mysqli("127.0.0.1" , "root" , ""  , "flashing_lights");	
-
-
-
+session_set_save_handler(new CustomSessionHandler());
 if(isset($_COOKIE['fls'])){
-   
-  
-	$user_data = $mysql->query("select * from users where id = '{$_COOKIE['fls'] }' limit 1")->fetch_assoc();
- 	//print_r($_COOKIE);
-    if($user_data){    
-        $player_name = $user_data["name"];
-    	$highscore   = $user_data["highscore"];
+	
+	session_name("fls");
+  	session_start();
+	$id = $_COOKIE['fls']; 
+	
+	$user_data = $mysql->query("select data from sessions where id = '{$id}' limit 1")->fetch_assoc();
+    if($user_data){
+    	session_decode($user_data["data"]);    
+        $player_name = $_SESSION["name"];
+		$score       = $_SESSION["score"];
+    	$highscore   = $_SESSION["highscore"];
+		$visits      = $_SESSION["visits"]++;
 	
 	}else{
-        $player_name = "Player" . (getNumberOfActivePlayers() + 1); 	
-		
+        $player_name = "Player" . getNumberOfActivePlayers(); 
+		$highscore   = 0;	
+		$score       = 0;
+		$visits      = 1;
      }
-}else{
- 
- $player_name = "Player" . (getNumberOfActivePlayers() + 1);
+
 }
-
-//this is ok for now but when I think of more cookies to set this will have to change
-if(!isCookieSet("vists"))
-	setSiteCookies();
-
-
-session_set_save_handler(new CustomSessionHandler());
-
 	if(session_status() == PHP_SESSION_NONE) {
 		session_name("fls");
     	session_start();
 		$id = $_COOKIE['fls']; 
+		$player_name = "Player" . getNumberOfActivePlayers(); 
+		$_SESSION["name"] = $player_name;
+		$_SESSION["score"] = 0;
+		$_SESSION["highscore"] = 0;
+		$_SESSION["visits"] = 1;
+		
+
+		
 } 
 
 echo("

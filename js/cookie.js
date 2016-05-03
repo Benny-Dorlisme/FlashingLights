@@ -57,10 +57,12 @@
 	        		if(secire != undefined || secure != null)
         			cookie += ("secure="+ secure + ";");
         			
+        			document.cookie = cookie;
+        			
         		}catch(ex){
         			
         		}finally{
-        			document.cookie = cookie;
+        			
         		}
     },
     destroyCookie : function(cookie){
@@ -102,12 +104,10 @@
 	      	cookies = document.cookie;
 	      	exist   = false;
 	     
-	             if (cookies.indexOf(name) != -1)
-	                exist = true;
-	             else
-	             	exist = exist;
-	             	
-	             	return exist;
+	        if (cookies.indexOf(name) != -1)
+	        	exist = true;
+	 		
+	 		return exist;
 	      }catch(ex){
 	      	
 	      }finally{

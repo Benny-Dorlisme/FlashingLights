@@ -66,36 +66,26 @@ Ajax = 	{
     	var cookies = undefined;
     	
         try{
+        	
         	cookies = document.cookie;
+        	id = CookieFile.getCookieValue("fls");
+        	if(id == null || id == undefined)
+        		return;
+        		
            if(window.XMLHttpRequest){
           		
           		 if(this.request == null)
 	                      this.request = new XMLHttpRequest();
-	                    
-          		if(CookieFile.doesCookieExist("name")){
-          		
-	           		if(cookies.indexOf(";" ,cookies.indexOf("name")) == -1)
-	      				id = cookies.substring(cookies.indexOf("name")+5 ,cookies.length);
-	      			else
-	      				id =cookies.substring(cookies.indexOf("name")+5 ,cookies.indexOf(";"));
-	                
-	                this.request.open("GET","../php/ajax.php?status=0&username="+id,true);
-	                this.request.send();
-	                this.request.onreadystatechange = function(){
-	                         if(Ajax.request.status == 200 && Ajax.request.readyState == 4 ){
-	              				
-	                         }
-	                };
-               }else{
+	               
                	
-               		this.request.open("GET","../php/ajax.php?status=0&id="+id,true);
+               		this.request.open("GET","/php/ajax.php?status=0&id="+id,true);
 	                this.request.send();
 	                this.request.onreadystatechange = function(){
-	                         if(Ajax.request.status == 200 && Ajax.request.readyState == 4 ){
-	              
-	                         }
-               };
-            }
+		                if(Ajax.request.status == 200 && Ajax.request.readyState == 4 ){
+		              	
+		                }
+               		};
+            
             } else{
          
                 if(this.request == null)

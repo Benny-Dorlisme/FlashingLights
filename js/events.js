@@ -5,9 +5,11 @@
  */
 window.onbeforeunload = function(){
    Ajax.turnSessionOff();
+   return null;
 };
 // Things to do when the window is done loading
 window.onload = function(){
+      
       
       try{
       	//first start the game. Going to have to change this when I'm done
@@ -15,11 +17,11 @@ window.onload = function(){
 		 //next add a listener to the player_name input box so player can set their name 
 		    document.getElementById("player_name").addEventListener("blur" , function(){
 			    try{
-			    	//need to change name of session cookie
+			    
 			    	var id = CookieFile.getCookieValue("fls");
-       				console.log(document.cookie);
+       			
 				    Game.Player.name = this.value;
-					Ajax.setPlayerName(Game.Player.name , id);
+					Ajax.setPlayerName(Game.Player.name ,id);
 				}catch(ex){
 					console.log(ex);
 				}finally{

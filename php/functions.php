@@ -10,7 +10,7 @@ function getNumberOfActivePlayers(){
     try{
           $mysql = new mysqli("127.0.0.1" ,"root", "", "flashing_lights");
  	       		$number_of_players = count($mysql->query("select * from sessions  where  status = 1")->fetch_all());
-				
+			
 		         $mysql->close();
            $mysql = null;
            return $number_of_players;
@@ -58,11 +58,18 @@ function getSystem(){
 }
 function isCookieSet($cookie){
 	
-	if(isset($_COOKIE[$cookie]))
+	if(!empty($_COOKIE[$cookie]))
 		return true;
 	else 
 		return false;
-};
+}
+function InitCookies(){
+	
+	
+	setcookie("visits","1",time()+60*60*24*30*12);
+	setcookie("name","player" . (getNumberOfActivePlayers()+1),time()+60*60*24*30*12);
+}
+
 function setSiteCookies(){
 	
 	setcookie("visits","1",time()+60*60*24*30*12);
