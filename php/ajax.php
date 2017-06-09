@@ -7,14 +7,16 @@ if(isset($_GET['id']) && !empty($_GET['id']))
 	$id = htmlentities($_GET['id']);
 else
 	exit;
-$mysql = new mysqli("127.0.0.1" ,"root", "", "flashing_lights");
+$mysql = new mysqli("192.168.1.15" ,"root", "", "flashing_lights");
 
-if(!mysqli){
+if(!$mysql){
 	echo "db error!";
 	exit;
 }
-if(isset($_GET['status']) && !empty($_GET['status'])){
+if(isset($_GET['status']) && !is_null($_GET['status'])){
+
 	if($_GET['status'] == 0){
+
 		$stmt = $mysql->prepare("select * from sessions where id = ? limit 1");
 		$stmt->bind_param("s",$id);
 		$s = $stmt->execute();
@@ -26,11 +28,12 @@ if(isset($_GET['status']) && !empty($_GET['status'])){
 			$stmt->bind_param("s",$id);
 			$stmt->execute();
 			$stmt->close();
+
 		}
 	}else{
 		
 	}
-}else if(isset($_GET['username']) && !empty($_GET['username'])){
+}else if(isset($_GET['username']) && !is_null($_GET['username'])){
 	
 	session_set_save_handler(new CustomSessionHandler());
 	session_name("fls");

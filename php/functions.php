@@ -8,9 +8,12 @@ function getIPAddress(){
 function getNumberOfActivePlayers(){
 
     try{
-          $mysql = new mysqli("127.0.0.1" ,"root", "", "flashing_lights");
- 	       		$number_of_players = count($mysql->query("select * from sessions  where  status = 1")->fetch_all());
-			
+
+          $mysql = new mysqli("192.168.1.15`" ,"root", "", "flashing_lights");
+
+ 	       		$number_of_players = $mysql->query("select * from sessions where status = '1' ");
+                if(is_null($number_of_players))
+                    $number_of_players = 0;
 		         $mysql->close();
            $mysql = null;
            return $number_of_players;

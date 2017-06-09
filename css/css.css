@@ -15,23 +15,19 @@ body{
 	margin: 0 auto;
 	width:960px;
 	height:995px;
-	border-left: solid 1px;
-	border-right: solid 1px;
-background-color: gold;
+
 	
 }
 #game{
 	
 	margin:auto;
 	width:65%;
-	border-radius: 30px;
-	border:solid 2px black;
+	border-left:solid 2px black;
+	border-right:solid 2px black;
 	z-index:50;
 	background-color: silver;
-	height:60%;
-	
-	
-	
+	height:100%;
+
 }
 #count_down{
 	
@@ -68,7 +64,9 @@ background-color: gold;
 	box-shadow:-3px 3px 5px black;
 	z-index:100;
 }
-
+.circle:active{
+	box-shadow: 0px 0px 0px black;
+}
 .timer{
 	
 	
@@ -127,14 +125,32 @@ background-color:red;
 [data-circle='null']{
 background-color:white;
 }
-meter { -webkit-appearance: none; }
+meter { -webkit-appearance: meter; }
 meter::-webkit-meter-optimum-value {
-    background: green;
-    background: -moz-linear-gradient(top, #a1d4e6 0%, #6bb4d1 100%);
-    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, lightgreen), color-stop(100%, darkgreen));
-    background: -webkit-linear-gradient(top, lightgreen 0%, darkgreen 100%);
-    background: -o-linear-gradient(top, #a1d4e6 0%, #6bb4d1 100%);
-    background: -ms-linear-gradient(top, #a1d4e6 0%, #6bb4d1 100%);
-    background: linear-gradient(to left, #lightgreen 0%, darkgreen 100%);
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#a1d4e6', endColorstr='#6bb4d1',GradientType=0);
+	background: green;
+	background: -moz-linear-gradient(top, #a1d4e6 0%, #6bb4d1 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, lightgreen), color-stop(100%, darkgreen));
+	background: -webkit-linear-gradient(top, lightgreen 0%, darkgreen 100%);
+	background: -o-linear-gradient(top, #a1d4e6 0%, #6bb4d1 100%);
+	background: -ms-linear-gradient(top, #a1d4e6 0%, #6bb4d1 100%);
+	background: linear-gradient(to left, lightgreen 0%, darkgreen 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#a1d4e6', endColorstr='#6bb4d1',GradientType=0);
+}
+#game_stage{
+	margin:0 auto;
+	width:83%
+}
+#skills_container{
+	width:72%;
+	margin:0 auto;
+}
+#skills_container ul li{
+	list-style: none;
+	display:inline-block;
+	margin:0 2%;
+}
+.skill{
+	height:100px;
+	width:100px;
+	border:1px solid;
 }

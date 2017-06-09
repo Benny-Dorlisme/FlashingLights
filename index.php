@@ -2,84 +2,94 @@
 
 include("php/CustomSessionHandler.php");
 include("php/functions.php");
-	 
-$mysql = new mysqli("127.0.0.1" , "root" , ""  , "flashing_lights");	
+
+$mysql = new mysqli("192.168.1.15" , "root" , ""  , "flashing_lights");
 session_set_save_handler(new CustomSessionHandler());
 if(isset($_COOKIE['fls'])){
-	
+
 	session_name("fls");
   	session_start();
-	$id = $_COOKIE['fls']; 
-	
+	$id = $_COOKIE['fls'];
+
 	$user_data = $mysql->query("select data from sessions where id = '{$id}' limit 1")->fetch_assoc();
     if($user_data){
-    	session_decode($user_data["data"]);    
-        $player_name = $_SESSION["name"];
+    	session_decode($user_data["data"]);
+       $player_name = $_SESSION["name"];
 		$score       = $_SESSION["score"];
     	$highscore   = $_SESSION["highscore"];
 		$visits      = $_SESSION["visits"]++;
-	
+
 	}else{
-        $player_name = "Player" . getNumberOfActivePlayers(); 
-		$highscore   = 0;	
+        $player_name = "Player" . getNumberOfActivePlayers();
+		$highscore   = 0;
 		$score       = 0;
 		$visits      = 1;
      }
 
 }
+
+
 	if(session_status() == PHP_SESSION_NONE) {
+
 		session_name("fls");
     	session_start();
-		$id = $_COOKIE['fls']; 
-		$player_name = "Player" . getNumberOfActivePlayers(); 
+		$id = $_COOKIE['fls'];
+
+		$player_name = "Player" . getNumberOfActivePlayers();
+
 		$_SESSION["name"] = $player_name;
 		$_SESSION["score"] = 0;
 		$_SESSION["highscore"] = 0;
 		$_SESSION["visits"] = 1;
-		
 
-		
-} 
+
+
+}
 
 echo("
 <!DOCTYPE html>
-<html>
+<html >
 	<head>
 		<title>
 			Web app 
 		</title>
-		<script type='text/javascript' src='js/jquery-1.10.1.js'></script>
+		<script type='text/javascript' src='js/jquery-3.2.1.js'></script>
 				 <script src='/js/date.js'></script>
 		 <script src='/js/cookie.js'></script>
-  		 		<script src='/js/ajax.js'></script>
-		<script src='/js/game.js'></script> 
-<script src='/js/events.js'></script>
+		 <script src='/js/cookie.js'></script>
+<script src='/js/render_streaming_web_audio.js'></script>
+<script src='/js/common_utils.js'></script>
+<script src='/js/client_entry.js'></script>
+<script src='/js/shared_utils.js'></script>
+
+
 		<link type='text/css' rel='stylesheet' href='/css/css.css'>
 	</head>
 	<body>
 		
 		
 		<div id='game_container'>
-			<section id='hud'>
-				<label for='username'>Username:</label>
-				<input class='hud_item' id='player_name' name='username' value='{$player_name}' onkeypress=''/>
-				<br />
-				<span class='hud_item'>Score: </span> <span id='current_score'></span>
-				<br />
-				<span class='hud_item' id='number_of_trys'>Trys: </span><span id='current_number_of_trys_left'></span>
-		
-			</section>
-			
-	
-				
-				
-				
-				
-			
-		
-				
+
 				<section id='game'>
-				
+				<header>
+					<div>
+					<section id='hud'>
+							<label for='username'>Username:</label>
+						<input class='hud_item' id='player_name' name='username' value='{$player_name}' />
+						<br />
+						<span class='hud_item' id='player_score'>Score: </span> <span id='current_score'></span>
+						<br />
+						<span class='hud_item' id='player_highscore'>HighScore: </span> <span id='current_highscore'></span>
+						<br />
+						<span class='hud_item' id='number_of_trys'>Trys: </span><span id='current_number_of_trys_left'></span>
+						<br/>
+				        <span class='hud_item' id='game_level'>Level: </span><span id='current_game_level'></span>
+					</section>
+					</div>
+					<div>
+					</div>
+				</header>
+			
 				<div  class='energy'>
 					<div  class='energy_layer' id='energy_layer_1'>
 					
@@ -90,11 +100,10 @@ echo("
 				</div>
 				</div>
 				</div>
-				
+				<div id='game_stage'>
 					<div class='circle' id='1' data-circle='null'>
 						<footer class='timer' id='timer_1'>
-							<meter title='time' class='time_bar' id='time_bar1' value='0' max='5' min='0'>
-							</meter>
+							<meter title='time' class='time_bar' id='time_bar1' value='0' max='5' min='0'></meter>
 						</footer>
 					</div>
 
@@ -192,6 +201,7 @@ echo("
 						</footer>
 					</div>
 					
+				</div> 
 					<div id='skills_container'>
 						<ul>
 							<li>
@@ -215,10 +225,9 @@ echo("
 						Play
 				    </button>
 			
-			
-				<!--
+			<script src='/js/game.js'></script> 
+	
 				
-				-->
 			
 				
 		</div>

@@ -1,11 +1,11 @@
 <?php
 	class CustomSessionHandler extends SessionHandler{
 		
-		public function open($save_path, $session_name){}
+		public function open($save_path, $session_name){return true;}
 			
 		public function read($id){
 			
-			$mysql = new mysqli("127.0.0.1" ,"root", "", "flashing_lights");
+			$mysql = new mysqli("192.168.1.15" ,"root", "", "flashing_lights");
 		
 			if($mysql->query("select * from sessions where id ='". $id."' limit 1")->fetch_row() == 0){
 			
@@ -24,13 +24,14 @@
 			$data = $result->fetch_row();
 		
  			$mysql->close();
-			
+			if(is_null($data))
+				$data = '';
     		return $data;
 			
 		}
 		public function write($id , $data){
 			
-			$mysql = new mysqli("127.0.0.1" ,"root", "", "flashing_lights");
+			$mysql = new mysqli("192.168.1.15" ,"root", "", "flashing_lights");
 			
 			$mysql->query("update sessions  set data ='" . $data ."' , time_accessed = now() where id = '" . $id . "'");
 			$mysql->close();
